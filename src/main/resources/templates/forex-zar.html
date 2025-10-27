@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout :: layout(~{::content})">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout :: head"></head>
 
 <body>
-<div th:fragment="content">
+    <header th:replace="layout :: navbar"></header>
 
     <!-- Header Start -->
     <div class="container-fluid hero-header bg-light py-5 mb-5">
@@ -13,14 +14,14 @@
                     <h1 class="display-4 mb-3 animated slideInDown">Token Sale</h1>
                     <nav aria-label="breadcrumb animated slideInDown">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
                             <li class="breadcrumb-item"><a href="#">Pages</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Token Sale</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="col-lg-6 animated fadeIn">
-                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" src="img/hero-2.png"
+                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" th:src="@{/img/hero-2.png}"
                         alt="">
                 </div>
             </div>
@@ -65,17 +66,17 @@
                     <a class="btn btn-primary py-3 px-4" href="">Buy Token</a>
                 </div>
                 <div class="col-12 text-center">
-                    <img class="img-fluid m-1" src="img/payment-1.png" alt="" style="width: 50px;">
-                    <img class="img-fluid m-1" src="img/payment-2.png" alt="" style="width: 50px;">
-                    <img class="img-fluid m-1" src="img/payment-3.png" alt="" style="width: 50px;">
-                    <img class="img-fluid m-1" src="img/payment-4.png" alt="" style="width: 50px;">
+                    <img class="img-fluid m-1" th:src="@{/img/payment-1.png}" alt="" style="width: 50px;">
+                    <img class="img-fluid m-1" th:src="@{/img/payment-2.png}" alt="" style="width: 50px;">
+                    <img class="img-fluid m-1" th:src="@{/img/payment-3.png}" alt="" style="width: 50px;">
+                    <img class="img-fluid m-1" th:src="@{/img/payment-4.png}" alt="" style="width: 50px;">
                 </div>
             </div>
         </div>
     </div>
-    <!-- Token Sale Start -->
+    <!-- Token Sale End -->
 
-</div>
+    <footer th:replace="layout :: footer"></footer>
 </body>
 
 </html>

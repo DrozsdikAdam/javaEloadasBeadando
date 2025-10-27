@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout :: layout(~{::content})">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout :: head"></head>
 
 <body>
-<div th:fragment="content">
+    <header th:replace="layout :: navbar"></header>
+
     <!-- Header Start -->
     <div class="container-fluid hero-header bg-light py-5 mb-5">
         <div class="container py-5">
@@ -12,14 +14,14 @@
                     <h1 class="display-4 mb-3 animated slideInDown">About Us</h1>
                     <nav aria-label="breadcrumb animated slideInDown">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
                             <li class="breadcrumb-item"><a href="#">Pages</a></li>
                             <li class="breadcrumb-item active" aria-current="page">About Us</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="col-lg-6 animated fadeIn">
-                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" src="img/hero-2.png"
+                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" th:src="@{/img/hero-2.png}"
                         alt="">
                 </div>
             </div>
@@ -33,7 +35,7 @@
         <div class="container">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <img class="img-fluid" src="img/about.png" alt="">
+                    <img class="img-fluid" th:src="@{/img/about.png}" alt="">
                 </div>
                 <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="h-100">
@@ -64,8 +66,7 @@
     </div>
     <!-- About End -->
 
-
-</div>
+    <footer th:replace="layout :: footer"></footer>
 </body>
 
 </html>

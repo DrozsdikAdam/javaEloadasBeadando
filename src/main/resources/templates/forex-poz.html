@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      th:replace="layout :: layout(~{::content})">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="layout :: head"></head>
 
 <body>
-<div th:fragment="content">
+    <header th:replace="layout :: navbar"></header>
+
     <!-- Header Start -->
     <div class="container-fluid hero-header bg-light py-5 mb-5">
         <div class="container py-5">
@@ -12,14 +14,14 @@
                     <h1 class="display-4 mb-3 animated slideInDown">Services</h1>
                     <nav aria-label="breadcrumb animated slideInDown">
                         <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
                             <li class="breadcrumb-item"><a href="#">Pages</a></li>
                             <li class="breadcrumb-item active" aria-current="page">Services</li>
                         </ol>
                     </nav>
                 </div>
                 <div class="col-lg-6 animated fadeIn">
-                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" src="img/hero-2.png"
+                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" th:src="@{/img/hero-2.png}"
                         alt="">
                 </div>
             </div>
@@ -38,7 +40,7 @@
             <div class="row g-4">
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" src="img/icon-7.png" alt="">
+                        <img class="img-fluid mb-4" th:src="@{/img/icon-7.png}" alt="">
                         <h5 class="mb-3">Currency Wallet</h5>
                         <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
                             justo</p>
@@ -47,7 +49,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" src="img/icon-3.png" alt="">
+                        <img class="img-fluid mb-4" th:src="@{/img/icon-3.png}" alt="">
                         <h5 class="mb-3">Currency Transaction</h5>
                         <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
                             justo</p>
@@ -56,7 +58,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" src="img/icon-9.png" alt="">
+                        <img class="img-fluid mb-4" th:src="@{/img/icon-9.png}" alt="">
                         <h5 class="mb-3">Bitcoin Investment</h5>
                         <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
                             justo</p>
@@ -65,7 +67,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                     <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" src="img/icon-5.png" alt="">
+                        <img class="img-fluid mb-4" th:src="@{/img/icon-5.png}" alt="">
                         <h5 class="mb-3">Currency Exchange</h5>
                         <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
                             justo</p>
@@ -74,7 +76,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                     <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" src="img/icon-2.png" alt="">
+                        <img class="img-fluid mb-4" th:src="@{/img/icon-2.png}" alt="">
                         <h5 class="mb-3">Bitcoin Escrow</h5>
                         <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
                             justo</p>
@@ -83,7 +85,7 @@
                 </div>
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                     <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" src="img/icon-8.png" alt="">
+                        <img class="img-fluid mb-4" th:src="@{/img/icon-8.png}" alt="">
                         <h5 class="mb-3">Token Sale</h5>
                         <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
                             justo</p>
@@ -95,7 +97,7 @@
     </div>
     <!-- Service End -->
 
-</div>
+    <footer th:replace="layout :: footer"></footer>
 </body>
 
 </html>
