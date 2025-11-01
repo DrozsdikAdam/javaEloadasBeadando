@@ -1,11 +1,24 @@
 package com.example.javaeloadasbeadando;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import soapclient.MNBArfolyamServiceSoapGetCurrentExchangeRatesStringFaultFaultMessage;
+import soapclient.MNBArfolyamServiceSoapGetExchangeRatesStringFaultFaultMessage;
+import soapclient.MNBArfolyamServiceSoapGetInfoStringFaultFaultMessage;
 
 @Controller
 public class pageController implements ErrorController {
+
+    private final BankController bankController;
+
+    @Autowired
+    public pageController(BankController bankController) {
+        this.bankController = bankController;
+    }
 
     @RequestMapping("/error")
     public String handleError() {
@@ -16,7 +29,10 @@ public class pageController implements ErrorController {
     public String index() { return "index"; }
 
     @GetMapping("/soap")
-    public String soap() { return "soap"; }
+    public String soap(Model model) throws MNBArfolyamServiceSoapGetInfoStringFaultFaultMessage, MNBArfolyamServiceSoapGetCurrentExchangeRatesStringFaultFaultMessage, MNBArfolyamServiceSoapGetExchangeRatesStringFaultFaultMessage {
+        model.addAttribute("feladat1Result", bankController.feladat1());
+        return "soap";
+    }
 
     @GetMapping("/forex/account")
     public String forexAccount() { return "forex-account"; }
@@ -35,5 +51,6 @@ public class pageController implements ErrorController {
 
     @GetMapping("/forex/zar")
     public String forexZar() { return "forex-zar"; }
+
 
 }
