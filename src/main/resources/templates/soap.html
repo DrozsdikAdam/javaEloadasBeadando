@@ -11,18 +11,14 @@
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 mb-3 animated slideInDown">SOAP</h1>
+                    <h1 class="display-4 mb-3 animated slideInDown">SOAP Lekérdezés</h1>
                     <nav aria-label="breadcrumb animated slideInDown">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+                            <li class="breadcrumb-item"><a>Pages</a></li>
                             <li class="breadcrumb-item active" aria-current="page">SOAP</li>
                         </ol>
                     </nav>
-                </div>
-                <div class="col-lg-6 animated fadeIn">
-                    <img class="img-fluid animated pulse infinite" style="animation-duration: 3s;" th:src="@{/img/hero-2.png}"
-                        alt="">
                 </div>
             </div>
         </div>
@@ -30,25 +26,41 @@
     <!-- Header End -->
 
 
-    <!-- About Start -->
+    <!-- Dynamic SOAP Form Start -->
     <div class="container-xxl py-5">
         <div class="container">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <img class="img-fluid" th:src="@{/img/about.png}" alt="">
-                </div>
-                <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="h-100">
-                        <h1 class="display-6">SOAP Feladat</h1>
-                        <p class="text-primary fs-5 mb-4">MNB Árfolyamok</p>
-                        <p>A SOAP szolgáltatás által visszaadott adatok:</p>
-                        <p th:utext="${feladat1Result}"></p>
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-8 col-sm-10 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="p-4 shadow-md">
+                        <h3 class="text-center mb-4 text-dark">MNB Árfolyam Lekérdezése</h3>
+                        <form th:action="@{/soap}" method="post">
+                            <div class="mb-3">
+                                <label for="startDate" class="form-label text-dark">Kezdő Dátum</label>
+                                <input type="date" class="form-control text-dark" id="startDate" name="startDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="endDate" class="form-label text-dark">Végső Dátum</label>
+                                <input type="date" class="form-control text-dark" id="endDate" name="endDate" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="currency" class="form-label text-dark">Pénznem</label>
+                                <select class="form-select text-dark" id="currency" name="currency">
+                                    <!-- Options will be populated by Thymeleaf -->
+                                    <option selected disabled>Válassz pénznemet...</option>
+                                    <option>EUR</option> <!-- Placeholder -->
+                                    <option>USD</option> <!-- Placeholder -->
+                                </select>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-hover btn-lg">Lekérdezés</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- About End -->
+    <!-- Dynamic SOAP Form End -->
 
     <footer th:replace="layout :: footer"></footer>
 </body>

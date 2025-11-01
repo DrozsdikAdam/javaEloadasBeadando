@@ -13,11 +13,11 @@ import soapclient.MNBArfolyamServiceSoapGetInfoStringFaultFaultMessage;
 @Controller
 public class pageController implements ErrorController {
 
-    private final BankController bankController;
+    private final BankFunctions bankFunctions;
 
     @Autowired
-    public pageController(BankController bankController) {
-        this.bankController = bankController;
+    public pageController(BankFunctions bankFunctions) {
+        this.bankFunctions = bankFunctions;
     }
 
     @RequestMapping("/error")
@@ -30,7 +30,7 @@ public class pageController implements ErrorController {
 
     @GetMapping("/soap")
     public String soap(Model model) throws MNBArfolyamServiceSoapGetInfoStringFaultFaultMessage, MNBArfolyamServiceSoapGetCurrentExchangeRatesStringFaultFaultMessage, MNBArfolyamServiceSoapGetExchangeRatesStringFaultFaultMessage {
-        model.addAttribute("feladat1Result", bankController.feladat1());
+        model.addAttribute("feladat1Result", bankFunctions.getMnbData());
         return "soap";
     }
 
@@ -51,6 +51,4 @@ public class pageController implements ErrorController {
 
     @GetMapping("/forex/zar")
     public String forexZar() { return "forex-zar"; }
-
-
 }
