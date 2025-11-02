@@ -1,17 +1,17 @@
 package com.example.javaeloadasbeadando;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import soapclient.MNBArfolyamServiceSoapGetCurrentExchangeRatesStringFaultFaultMessage;
-import soapclient.MNBArfolyamServiceSoapGetExchangeRatesStringFaultFaultMessage;
-import soapclient.MNBArfolyamServiceSoapGetInfoStringFaultFaultMessage;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import soapclient.MessagePrice;
+
+import java.util.List;
 
 @Controller
-public class pageController implements ErrorController {
+public class pageController {
 
     private final BankFunctions bankFunctions;
 
@@ -20,17 +20,35 @@ public class pageController implements ErrorController {
         this.bankFunctions = bankFunctions;
     }
 
-    @RequestMapping("/error")
-    public String handleError() {
-        return "404";
-    }
-
     @GetMapping("/")
     public String index() { return "index"; }
 
     @GetMapping("/soap")
-    public String soap(Model model) throws MNBArfolyamServiceSoapGetInfoStringFaultFaultMessage, MNBArfolyamServiceSoapGetCurrentExchangeRatesStringFaultFaultMessage, MNBArfolyamServiceSoapGetExchangeRatesStringFaultFaultMessage {
-        model.addAttribute("feladat1Result", bankFunctions.getMnbData());
+    public String soap(Model model) {
+        try {
+            model.addAttribute("currencies", bankFunctions.getAvailableCurrencies());
+        } catch (Exception e) {
+            model.addAttribute("soapError", "Hiba történt a pénznemek lekérdezése során: " + e.getMessage());
+        }
+        model.addAttribute("messagePrice", new MessagePrice());
+        return "soap";
+    }
+
+    @PostMapping("/soap")
+    public String soap2(@ModelAttribute MessagePrice messagePrice, Model model) {
+        try {
+            List<ExchangeRateData> rates = bankFunctions.getExchangeRates(messagePrice.getStartDate(), messagePrice.getEndDate(), messagePrice.getCurrency());
+            model.addAttribute("rates", rates);
+            model.addAttribute("currencies", bankFunctions.getAvailableCurrencies()); // Re-add currencies for the form
+        } catch (Exception e) {
+            model.addAttribute("soapError", "Hiba történt a SOAP kérés során: " + e.getMessage());
+            try {
+                model.addAttribute("currencies", bankFunctions.getAvailableCurrencies()); // Try to get currencies even on error
+            } catch (Exception ex) {
+                // If this also fails, do nothing, the error is already set
+            }
+        }
+        model.addAttribute("messagePrice", new MessagePrice()); // Re-add empty object for the form
         return "soap";
     }
 

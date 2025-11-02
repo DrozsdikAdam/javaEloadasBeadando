@@ -31,24 +31,22 @@
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-6 col-md-8 col-sm-10 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="p-4 shadow-md">
+                    <div class="p-4 shadow-sm">
                         <h3 class="text-center mb-4 text-dark">MNB Árfolyam Lekérdezése</h3>
-                        <form th:action="@{/soap}" method="post">
+                        <form th:action="@{/soap}" th:object="${messagePrice}" method="post">
                             <div class="mb-3">
                                 <label for="startDate" class="form-label text-dark">Kezdő Dátum</label>
-                                <input type="date" class="form-control text-dark" id="startDate" name="startDate" required>
+                                <input type="date" class="form-control text-dark" id="startDate" th:field="*{startDate}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="endDate" class="form-label text-dark">Végső Dátum</label>
-                                <input type="date" class="form-control text-dark" id="endDate" name="endDate" required>
+                                <input type="date" class="form-control text-dark" id="endDate" th:field="*{endDate}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="currency" class="form-label text-dark">Pénznem</label>
-                                <select class="form-select text-dark" id="currency" name="currency">
-                                    <!-- Options will be populated by Thymeleaf -->
-                                    <option selected disabled>Válassz pénznemet...</option>
-                                    <option>EUR</option> <!-- Placeholder -->
-                                    <option>USD</option> <!-- Placeholder -->
+                                <select class="form-select text-dark" id="currency" th:field="*{currency}">
+                                    <option selected disabled value="">Válassz pénznemet...</option>
+                                    <option th:each="curr : ${currencies}" th:value="${curr}" th:text="${curr}"></option>
                                 </select>
                             </div>
                             <div class="d-grid">
@@ -62,7 +60,64 @@
     </div>
     <!-- Dynamic SOAP Form End -->
 
+    <!-- SOAP Result Start -->
+    <div class="container-xxl py-5" th:if="${rates} or ${soapError}">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-md-10 col-sm-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="p-4 shadow-sm">
+                        <h3 class="text-center mb-4 text-dark">Lekérdezés Eredménye</h3>
+                        <div th:if="${soapError}" class="alert alert-danger" role="alert">
+                            <h4 class="alert-heading">Hiba!</h4>
+                            <p th:text="${soapError}"></p>
+                        </div>
+                        <div th:if="${rates}">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th class="text-dark">Dátum</th>
+                                        <th class="text-dark">Pénznem</th>
+                                        <th class="text-dark">Árfolyam</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="rate : ${rates}">
+                                        <td class="text-dark" th:text="${rate.date}"></td>
+                                        <td class="text-dark" th:text="${rate.currency}"></td>
+                                        <td class="text-dark" th:text="${rate.rate}"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- SOAP Result End -->
+
     <footer th:replace="layout :: footer"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('startDate');
+            const endDateInput = document.getElementById('endDate');
+
+            function disableWeekends(event) {
+                const date = new Date(event.target.value);
+                // A getUTCDay() vasárnapot (0) és szombatot (6) ad vissza.
+                const day = date.getUTCDay();
+                if (day === 0 || day === 6) {
+                    alert('Hétvégi nap nem választható!');
+                    event.target.value = '';
+                }
+            }
+
+            startDateInput.addEventListener('change', disableWeekends);
+            endDateInput.addEventListener('change', disableWeekends);
+        });
+    </script>
+
 </body>
 
 </html>
