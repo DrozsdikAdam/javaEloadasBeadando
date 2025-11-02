@@ -2,10 +2,10 @@ package com.example.javaeloadasbeadando;
 
 public class ExchangeRateData {
     private String date;
-    private String rate;
+    private Double rate;
     private String currency;
 
-    public ExchangeRateData(String date, String rate, String currency) {
+    public ExchangeRateData(String date, Double rate, String currency) {
         this.date = date;
         this.rate = rate;
         this.currency = currency;
@@ -20,11 +20,11 @@ public class ExchangeRateData {
         this.date = date;
     }
 
-    public String getRate() {
+    public Double getRate() {
         return rate;
     }
 
-    public void setRate(String rate) {
+    public void setRate(Double rate) {
         this.rate = rate;
     }
 

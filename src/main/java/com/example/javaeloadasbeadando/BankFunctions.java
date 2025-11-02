@@ -32,7 +32,6 @@ public class BankFunctions {
         for (int i = 0; i < currNodes.getLength(); i++) {
             currencies.add(currNodes.item(i).getTextContent());
         }
-        // HUF-ra nincs értelme árfolyamot lekérni, ezért eltávolítjuk a listából.
         currencies.remove("HUF");
         return currencies;
     }
@@ -55,7 +54,9 @@ public class BankFunctions {
             NodeList rateNodes = dayElement.getElementsByTagName("Rate");
             if (rateNodes.getLength() > 0) {
                 Element rateElement = (Element) rateNodes.item(0);
-                String rateValue = rateElement.getTextContent();
+                String rateValueStr = rateElement.getTextContent();
+                // A vesszőt pontra cseréljük és Double-é alakítjuk.
+                Double rateValue = Double.parseDouble(rateValueStr.replace(',', '.'));
                 String curr = rateElement.getAttribute("curr");
                 rates.add(new ExchangeRateData(date, rateValue, curr));
             }

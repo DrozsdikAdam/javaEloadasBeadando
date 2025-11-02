@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import soapclient.MessagePrice;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -39,6 +41,22 @@ public class pageController {
         try {
             List<ExchangeRateData> rates = bankFunctions.getExchangeRates(messagePrice.getStartDate(), messagePrice.getEndDate(), messagePrice.getCurrency());
             model.addAttribute("rates", rates);
+
+            List<String> chartLabels = new ArrayList<>();
+            List<Double> chartData = new ArrayList<>();
+
+            // A kapott adatok fordított sorrendben vannak, ezért megfordítjuk őket.
+            Collections.reverse(rates);
+
+            for (ExchangeRateData rate : rates) {
+                chartLabels.add(rate.getDate());
+                // A rate.getRate() már a helyes Double értéket adja vissza.
+                chartData.add(rate.getRate());
+            }
+
+            model.addAttribute("chartLabels", chartLabels);
+            model.addAttribute("chartData", chartData);
+
             model.addAttribute("currencies", bankFunctions.getAvailableCurrencies()); // Re-add currencies for the form
         } catch (Exception e) {
             model.addAttribute("soapError", "Hiba történt a SOAP kérés során: " + e.getMessage());
