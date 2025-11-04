@@ -1,5 +1,6 @@
 package com.example.javaeloadasbeadando;
 
+import com.oanda.v20.account.AccountSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -8,18 +9,19 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import soapclient.MessagePrice;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Controller
 public class pageController {
 
     private final BankFunctions bankFunctions;
+    // Hivatkozás a javított, kisbetűs osztálynévre
+    private final tradeApplication tradeApplication;
 
     @Autowired
-    public pageController(BankFunctions bankFunctions) {
+    public pageController(BankFunctions bankFunctions, tradeApplication tradeApplication) {
         this.bankFunctions = bankFunctions;
+        this.tradeApplication = tradeApplication;
     }
 
     @GetMapping("/")
@@ -41,22 +43,6 @@ public class pageController {
         try {
             List<ExchangeRateData> rates = bankFunctions.getExchangeRates(messagePrice.getStartDate(), messagePrice.getEndDate(), messagePrice.getCurrency());
             model.addAttribute("rates", rates);
-
-            List<String> chartLabels = new ArrayList<>();
-            List<Double> chartData = new ArrayList<>();
-
-            // A kapott adatok fordított sorrendben vannak, ezért megfordítjuk őket.
-            Collections.reverse(rates);
-
-            for (ExchangeRateData rate : rates) {
-                chartLabels.add(rate.getDate());
-                // A rate.getRate() már a helyes Double értéket adja vissza.
-                chartData.add(rate.getRate());
-            }
-
-            model.addAttribute("chartLabels", chartLabels);
-            model.addAttribute("chartData", chartData);
-
             model.addAttribute("currencies", bankFunctions.getAvailableCurrencies()); // Re-add currencies for the form
         } catch (Exception e) {
             model.addAttribute("soapError", "Hiba történt a SOAP kérés során: " + e.getMessage());
@@ -71,7 +57,11 @@ public class pageController {
     }
 
     @GetMapping("/forex/account")
-    public String forexAccount() { return "forex-account"; }
+    public String forexAccount(Model model) {
+        AccountSummary summary = tradeApplication.getAccountSummary();
+        model.addAttribute("accountSummary", summary);
+        return "forex-account";
+    }
 
     @GetMapping("/forex/aktar")
     public String forexAktar() { return "forex-aktar"; }

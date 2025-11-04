@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import com.oanda.v20.primitives.AccountUnits;
 import com.oanda.v20.primitives.Currency;
 import com.oanda.v20.primitives.DateTime;
-import com.oanda.v20.primitives.DecimalNumber;
+import com.oanda.v20.primitives.*;
 import com.oanda.v20.transaction.TransactionID;
 
 /**
