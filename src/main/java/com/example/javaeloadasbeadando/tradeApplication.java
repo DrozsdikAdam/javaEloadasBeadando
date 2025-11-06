@@ -87,4 +87,12 @@ public class tradeApplication {
     public List<CandlestickGranularity> getAvailableGranularities() {
         return Arrays.asList(CandlestickGranularity.values());
     }
+    public List<Position> getOpenPositions() {
+        try {
+            return getContext().position.listOpen(getAccountID()).getPositions();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 }

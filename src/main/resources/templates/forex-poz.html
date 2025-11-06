@@ -11,12 +11,12 @@
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 mb-3 animated slideInDown">Services</h1>
+                    <h1 class="display-4 mb-3 animated slideInDown">Nyitott Pozíciók</h1>
                     <nav aria-label="breadcrumb animated slideInDown">
                         <ol class="breadcrumb mb-0">
                             <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Services</li>
+                            <li class="breadcrumb-item"><a th:href="@{/forex/account}">Forex</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Nyitott Pozíciók</li>
                         </ol>
                     </nav>
                 </div>
@@ -26,72 +26,57 @@
     <!-- Header End -->
 
 
-    <!-- Service Start -->
+    <!-- Position Table Start -->
     <div class="container-xxl py-5">
         <div class="container">
-            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-                <h1 class="display-6">Services</h1>
-                <p class="text-primary fs-5 mb-5">Buy, Sell And Exchange Cryptocurrency</p>
-            </div>
-            <div class="row g-4">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" th:src="@{/img/icon-7.png}" alt="">
-                        <h5 class="mb-3">Currency Wallet</h5>
-                        <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
-                            justo</p>
-                        <a href="">Read More <i class="fa fa-arrow-right ms-2"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" th:src="@{/img/icon-3.png}" alt="">
-                        <h5 class="mb-3">Currency Transaction</h5>
-                        <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
-                            justo</p>
-                        <a href="">Read More <i class="fa fa-arrow-right ms-2"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" th:src="@{/img/icon-9.png}" alt="">
-                        <h5 class="mb-3">Bitcoin Investment</h5>
-                        <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
-                            justo</p>
-                        <a href="">Read More <i class="fa fa-arrow-right ms-2"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" th:src="@{/img/icon-5.png}" alt="">
-                        <h5 class="mb-3">Currency Exchange</h5>
-                        <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
-                            justo</p>
-                        <a href="">Read More <i class="fa fa-arrow-right ms-2"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" th:src="@{/img/icon-2.png}" alt="">
-                        <h5 class="mb-3">Bitcoin Escrow</h5>
-                        <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
-                            justo</p>
-                        <a href="">Read More <i class="fa fa-arrow-right ms-2"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="service-item bg-light p-5">
-                        <img class="img-fluid mb-4" th:src="@{/img/icon-8.png}" alt="">
-                        <h5 class="mb-3">Token Sale</h5>
-                        <p>Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo
-                            justo</p>
-                        <a href="">Read More <i class="fa fa-arrow-right ms-2"></i></a>
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="p-4 border border-dark rounded-3 shadow-sm bg-light">
+                        <h3 class="text-center mb-4 text-dark">Aktuális Nyitott Pozíciók (Nettó)</h3>
+                        <div th:if="${positions.isEmpty()}" class="alert alert-info text-center">
+                            Nincsenek nyitott pozíciók.
+                        </div>
+                        <div th:if="${!positions.isEmpty()}" class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                <tr>
+                                    <th>Instrumentum</th>
+                                    <th>Irány</th>
+                                    <th>Mennyiség</th>
+                                    <th>Átlagár</th>
+                                    <th>Nem realizált P/L</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <!-- Loop through each position -->
+                                <tr th:each="pos : ${positions}">
+                                    <td th:text="${pos.getInstrument()}"></td>
+
+                                    <!-- Determine Direction and Class -->
+                                    <td th:with="units=${pos.getLong().getUnits().doubleValue()}">
+                                        <span th:if="${units > 0}" class="badge bg-success">Long</span>
+                                        <span th:if="${units < 0}" class="badge bg-danger">Short</span>
+                                    </td>
+
+                                    <!-- Display Units -->
+                                    <td th:text="${pos.getLong().getUnits()}"></td>
+
+                                    <!-- Display Average Price -->
+                                    <td th:text="${pos.getLong().getAveragePrice()}"></td>
+
+                                    <!-- Display Unrealized P/L with color -->
+                                    <td th:text="${pos.getUnrealizedPL()}"
+                                        th:class="${pos.getUnrealizedPL().doubleValue() < 0 ? 'text-danger' : 'text-success'}"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Service End -->
+    <!-- Position Table End -->
 
     <footer th:replace="layout :: footer"></footer>
 </body>

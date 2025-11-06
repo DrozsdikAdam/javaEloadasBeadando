@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import soapclient.MessagePrice;
+import com.oanda.v20.position.Position;
 
 import java.util.List;
 
@@ -105,7 +106,11 @@ public class pageController {
     public String forexNyit() { return "forex-nyit"; }
 
     @GetMapping("/forex/poz")
-    public String forexPoz() { return "forex-poz"; }
+    public String forexPoz(Model model) {
+        List<Position> positions = tradeApplication.getOpenPositions();
+        model.addAttribute("positions", positions);
+        return "forex-poz";
+    }
 
     @GetMapping("/forex/zar")
     public String forexZar() { return "forex-zar"; }
