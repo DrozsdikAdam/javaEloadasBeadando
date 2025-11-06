@@ -1,5 +1,6 @@
 package com.example.javaeloadasbeadando;
 
+import com.oanda.v20.position.Position;
 import com.oanda.v20.Context;
 import com.oanda.v20.account.AccountID;
 import com.oanda.v20.account.AccountInstrumentsResponse;
