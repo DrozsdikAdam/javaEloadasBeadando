@@ -1,12 +1,14 @@
 package com.example.javaeloadasbeadando;
 
 import com.oanda.v20.account.AccountSummary;
+import com.oanda.v20.pricing.ClientPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import soapclient.MessagePrice;
 
 import java.util.List;
@@ -15,7 +17,6 @@ import java.util.List;
 public class pageController {
 
     private final BankFunctions bankFunctions;
-    // Hivatkozás a javított, kisbetűs osztálynévre
     private final tradeApplication tradeApplication;
 
     @Autowired
@@ -64,7 +65,20 @@ public class pageController {
     }
 
     @GetMapping("/forex/aktar")
-    public String forexAktar() { return "forex-aktar"; }
+    public String forexAktar(Model model) {
+        model.addAttribute("instruments", tradeApplication.getTradableInstruments());
+        return "forex-aktar";
+    }
+
+    @PostMapping("/forex/aktar")
+    public String forexAktarPost(@RequestParam String instrument, Model model) {
+        ClientPrice price = tradeApplication.getCurrentPrice(instrument);
+        model.addAttribute("price", price);
+        model.addAttribute("selectedInstrument", instrument);
+        // Re-populate the instruments list for the dropdown
+        model.addAttribute("instruments", tradeApplication.getTradableInstruments());
+        return "forex-aktar";
+    }
 
     @GetMapping("/forex/histar")
     public String forexHistar() { return "forex-histar"; }
