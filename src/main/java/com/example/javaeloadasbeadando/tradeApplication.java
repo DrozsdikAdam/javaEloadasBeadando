@@ -4,12 +4,17 @@ import com.oanda.v20.Context;
 import com.oanda.v20.account.AccountID;
 import com.oanda.v20.account.AccountInstrumentsResponse;
 import com.oanda.v20.account.AccountSummary;
+import com.oanda.v20.instrument.Candlestick;
+import com.oanda.v20.instrument.CandlestickGranularity;
+import com.oanda.v20.instrument.InstrumentCandlesRequest;
 import com.oanda.v20.primitives.Instrument;
+import com.oanda.v20.primitives.InstrumentName;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,7 +52,7 @@ public class tradeApplication {
         try {
             AccountInstrumentsResponse response = getContext().account.instruments(getAccountID());
             return response.getInstruments().stream()
-                    .map(instrument -> instrument.getName().toString()) // Corrected mapping
+                    .map(instrument -> instrument.getName().toString())
                     .sorted()
                     .collect(Collectors.toList());
         } catch (Exception e) {
@@ -64,5 +69,22 @@ public class tradeApplication {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public List<Candlestick> getHistoricalCandles(String instrumentName, CandlestickGranularity granularity) {
+        try {
+            InstrumentName name = new InstrumentName(instrumentName);
+            InstrumentCandlesRequest request = new InstrumentCandlesRequest(name)
+                    .setGranularity(granularity)
+                    .setCount(10L); // Corrected to Long type
+            return getContext().instrument.candles(request).getCandles();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    public List<CandlestickGranularity> getAvailableGranularities() {
+        return Arrays.asList(CandlestickGranularity.values());
     }
 }

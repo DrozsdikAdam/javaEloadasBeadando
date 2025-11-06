@@ -1,6 +1,8 @@
 package com.example.javaeloadasbeadando;
 
 import com.oanda.v20.account.AccountSummary;
+import com.oanda.v20.instrument.Candlestick;
+import com.oanda.v20.instrument.CandlestickGranularity;
 import com.oanda.v20.pricing.ClientPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -81,7 +83,23 @@ public class pageController {
     }
 
     @GetMapping("/forex/histar")
-    public String forexHistar() { return "forex-histar"; }
+    public String forexHistar(Model model) {
+        model.addAttribute("instruments", tradeApplication.getTradableInstruments());
+        model.addAttribute("granularities", tradeApplication.getAvailableGranularities());
+        return "forex-histar";
+    }
+
+    @PostMapping("/forex/histar")
+    public String forexHistarPost(@RequestParam String instrument, @RequestParam CandlestickGranularity granularity, Model model) {
+        List<Candlestick> candles = tradeApplication.getHistoricalCandles(instrument, granularity);
+        model.addAttribute("candles", candles);
+        model.addAttribute("selectedInstrument", instrument);
+        model.addAttribute("selectedGranularity", granularity);
+        // Re-populate the instruments and granularities lists for the dropdowns
+        model.addAttribute("instruments", tradeApplication.getTradableInstruments());
+        model.addAttribute("granularities", tradeApplication.getAvailableGranularities());
+        return "forex-histar";
+    }
 
     @GetMapping("/forex/nyit")
     public String forexNyit() { return "forex-nyit"; }
