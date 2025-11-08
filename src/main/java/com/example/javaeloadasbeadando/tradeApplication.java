@@ -12,6 +12,7 @@ import com.oanda.v20.order.OrderCreateRequest;
 import com.oanda.v20.order.OrderCreateResponse;
 import com.oanda.v20.order.TimeInForce;
 import com.oanda.v20.position.Position;
+import com.oanda.v20.primitives.DecimalNumber;
 import com.oanda.v20.primitives.InstrumentName;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -102,29 +102,11 @@ public class tradeApplication {
         }
     }
 
-    public OrderCreateResponse createMarketOrder(String instrumentName, double units) throws Exception {
-        if (units < 0) {
-            List<Position> openPositions = getOpenPositions();
-            Optional<Position> positionOpt = openPositions.stream()
-                    .filter(p -> p.getInstrument().toString().equals(instrumentName))
-                    .findFirst();
-
-            if (positionOpt.isEmpty()) {
-                throw new InsufficientPositionException("Nem létező pozícióból próbál eladni: " + instrumentName);
-            }
-
-            Position position = positionOpt.get();
-            double longUnits = position.getLong().getUnits().doubleValue();
-            double shortUnits = position.getShort().getUnits().doubleValue();
-            if (longUnits < Math.abs(units)) {
-                throw new InsufficientPositionException("Nincs elegendő egység az eladáshoz. Jelenlegi: " + longUnits + ", Eladni kívánt: " + Math.abs(units));
-            }
-        }
-
+    public OrderCreateResponse createMarketOrder(String instrumentName, Double units) throws Exception {
         MarketOrderRequest marketOrderRequest = new MarketOrderRequest()
                 .setInstrument(new InstrumentName(instrumentName))
-                .setUnits(units)
-                .setTimeInForce(TimeInForce.FOK);
+                .setUnits(new DecimalNumber(units)) // Correctly use DecimalNumber
+                .setTimeInForce(TimeInForce.FOK); // Fill Or Kill
 
         OrderCreateRequest orderCreateRequest = new OrderCreateRequest(getAccountID())
                 .setOrder(marketOrderRequest);

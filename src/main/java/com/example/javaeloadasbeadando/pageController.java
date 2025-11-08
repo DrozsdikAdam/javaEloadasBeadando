@@ -1,5 +1,6 @@
 package com.example.javaeloadasbeadando;
 
+import com.oanda.v20.RequestException;
 import com.oanda.v20.account.AccountSummary;
 import com.oanda.v20.instrument.Candlestick;
 import com.oanda.v20.instrument.CandlestickGranularity;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import soapclient.MessagePrice;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class pageController {
@@ -49,16 +51,23 @@ public class pageController {
         try {
             List<ExchangeRateData> rates = bankFunctions.getExchangeRates(messagePrice.getStartDate(), messagePrice.getEndDate(), messagePrice.getCurrency());
             model.addAttribute("rates", rates);
-            model.addAttribute("currencies", bankFunctions.getAvailableCurrencies()); // Re-add currencies for the form
+            model.addAttribute("currencies", bankFunctions.getAvailableCurrencies());
+
+            // Prepare data for the chart
+            List<String> chartLabels = rates.stream().map(ExchangeRateData::getDate).collect(Collectors.toList());
+            List<Double> chartData = rates.stream().map(ExchangeRateData::getRate).collect(Collectors.toList());
+            model.addAttribute("chartLabels", chartLabels);
+            model.addAttribute("chartData", chartData);
+
         } catch (Exception e) {
             model.addAttribute("soapError", "Hiba történt a SOAP kérés során: " + e.getMessage());
             try {
-                model.addAttribute("currencies", bankFunctions.getAvailableCurrencies()); // Try to get currencies even on error
+                model.addAttribute("currencies", bankFunctions.getAvailableCurrencies());
             } catch (Exception ex) {
                 // If this also fails, do nothing, the error is already set
             }
         }
-        model.addAttribute("messagePrice", new MessagePrice()); // Re-add empty object for the form
+        model.addAttribute("messagePrice", messagePrice); // Re-add submitted object for the form
         return "soap";
     }
 
@@ -80,7 +89,6 @@ public class pageController {
         ClientPrice price = tradeApplication.getCurrentPrice(instrument);
         model.addAttribute("price", price);
         model.addAttribute("selectedInstrument", instrument);
-        // Re-populate the instruments list for the dropdown
         model.addAttribute("instruments", tradeApplication.getTradableInstruments());
         return "forex-aktar";
     }
@@ -98,7 +106,6 @@ public class pageController {
         model.addAttribute("candles", candles);
         model.addAttribute("selectedInstrument", instrument);
         model.addAttribute("selectedGranularity", granularity);
-        // Re-populate the instruments and granularities lists for the dropdowns
         model.addAttribute("instruments", tradeApplication.getTradableInstruments());
         model.addAttribute("granularities", tradeApplication.getAvailableGranularities());
         return "forex-histar";
@@ -111,16 +118,18 @@ public class pageController {
     }
 
     @PostMapping("/forex/nyit")
-    public String forexNyitPost(@RequestParam String instrument, @RequestParam double units, RedirectAttributes redirectAttributes) {
+    public String forexNyitPost(@RequestParam String instrument, @RequestParam Double units, RedirectAttributes redirectAttributes) {
         try {
             OrderCreateResponse response = tradeApplication.createMarketOrder(instrument, units);
             if (response != null && response.getOrderFillTransaction() != null) {
-                redirectAttributes.addFlashAttribute("successMessage", "Pozíció sikeresen megnyitva/módosítva! Tranzakció ID: " + response.getOrderFillTransaction().getId());
+                redirectAttributes.addFlashAttribute("successMessage", "Megbízás sikeresen elküldve! Tranzakció ID: " + response.getOrderFillTransaction().getId());
+            } else if (response != null && response.getOrderCancelTransaction() != null) {
+                redirectAttributes.addFlashAttribute("errorMessage", "Sikertelen megbízás: " + response.getOrderCancelTransaction().getReason());
             } else {
-                redirectAttributes.addFlashAttribute("errorMessage", "Hiba történt a megbízás feldolgozása során.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Ismeretlen hiba történt a megbízás feldolgozása során.");
             }
-        } catch (InsufficientPositionException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Sikertelen megbízás: " + e.getMessage());
+        } catch (RequestException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "API Hiba: " + e.getErrorMessage());
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Váratlan hiba történt: " + e.getMessage());
             e.printStackTrace();
