@@ -3,6 +3,8 @@ package com.example.javaeloadasbeadando;
 import com.oanda.v20.account.AccountSummary;
 import com.oanda.v20.instrument.Candlestick;
 import com.oanda.v20.instrument.CandlestickGranularity;
+import com.oanda.v20.order.OrderCreateResponse;
+import com.oanda.v20.position.Position;
 import com.oanda.v20.pricing.ClientPrice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,8 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import soapclient.MessagePrice;
-import com.oanda.v20.position.Position;
 
 import java.util.List;
 
@@ -103,7 +105,28 @@ public class pageController {
     }
 
     @GetMapping("/forex/nyit")
-    public String forexNyit() { return "forex-nyit"; }
+    public String forexNyit(Model model) {
+        model.addAttribute("instruments", tradeApplication.getTradableInstruments());
+        return "forex-nyit";
+    }
+
+    @PostMapping("/forex/nyit")
+    public String forexNyitPost(@RequestParam String instrument, @RequestParam double units, RedirectAttributes redirectAttributes) {
+        try {
+            OrderCreateResponse response = tradeApplication.createMarketOrder(instrument, units);
+            if (response != null && response.getOrderFillTransaction() != null) {
+                redirectAttributes.addFlashAttribute("successMessage", "Pozíció sikeresen megnyitva/módosítva! Tranzakció ID: " + response.getOrderFillTransaction().getId());
+            } else {
+                redirectAttributes.addFlashAttribute("errorMessage", "Hiba történt a megbízás feldolgozása során.");
+            }
+        } catch (InsufficientPositionException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Sikertelen megbízás: " + e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Váratlan hiba történt: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "redirect:/forex/poz";
+    }
 
     @GetMapping("/forex/poz")
     public String forexPoz(Model model) {

@@ -4,72 +4,59 @@
 <head th:replace="layout :: head"></head>
 
 <body>
-    <header th:replace="layout :: navbar"></header>
+<header th:replace="layout :: navbar"></header>
 
-    <!-- Header Start -->
-    <div class="container-fluid hero-header bg-light py-5 mb-5">
-        <div class="container py-5">
-            <div class="row g-5 align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="display-4 mb-3 animated slideInDown">Roadmap</h1>
-                    <nav aria-label="breadcrumb animated slideInDown">
-                        <ol class="breadcrumb mb-0">
-                            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
-                            <li class="breadcrumb-item"><a href="#">Pages</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Roadmap</li>
-                        </ol>
-                    </nav>
+<!-- Header Start -->
+<div class="container-fluid hero-header bg-light py-5 mb-5">
+    <div class="container py-5">
+        <div class="row g-5 align-items-center">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-3 animated slideInDown">Pozíció Nyitása</h1>
+                <nav aria-label="breadcrumb animated slideInDown">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/forex/account}">Forex</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Pozíció Nyitása</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Open Position Form Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="p-4 border border-dark rounded-3 shadow-sm bg-light">
+                    <h3 class="text-center mb-4 text-dark">Új Piaci Megbízás</h3>
+                    <form th:action="@{/forex/nyit}" method="post">
+                        <div class="mb-3">
+                            <label for="instrument" class="form-label text-dark">Instrumentum</label>
+                            <select class="form-select" id="instrument" name="instrument" required>
+                                <option selected disabled value="">Kérlek válassz...</option>
+                                <option th:each="instr : ${instruments}" th:value="${instr}" th:text="${instr}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="units" class="form-label text-dark">Mennyiség</label>
+                            <input type="number" class="form-control" id="units" name="units" required
+                                   placeholder="Pozitív szám: Vétel (Long), Negatív szám: Eladás (Short)">
+                        </div>
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-success btn-lg">Pozíció Megnyitása</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Header End -->
+</div>
+<!-- Open Position Form End -->
 
-
-    <!-- Roadmap Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-                <h1 class="display-6">Roadmap</h1>
-                <p class="text-primary fs-5 mb-5">We Translate Your Dream Into Reality</p>
-            </div>
-            <div class="owl-carousel roadmap-carousel wow fadeInUp" data-wow-delay="0.1s">
-                <div class="roadmap-item">
-                    <div class="roadmap-point"><span></span></div>
-                    <h5>January 2045</h5>
-                    <span>Diam dolor ipsum sit amet erat ipsum lorem sit</span>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-point"><span></span></div>
-                    <h5>March 2045</h5>
-                    <span>Diam dolor ipsum sit amet erat ipsum lorem sit</span>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-point"><span></span></div>
-                    <h5>May 2045</h5>
-                    <span>Diam dolor ipsum sit amet erat ipsum lorem sit</span>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-point"><span></span></div>
-                    <h5>July 2045</h5>
-                    <span>Diam dolor ipsum sit amet erat ipsum lorem sit</span>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-point"><span></span></div>
-                    <h5>September 2045</h5>
-                    <span>Diam dolor ipsum sit amet erat ipsum lorem sit</span>
-                </div>
-                <div class="roadmap-item">
-                    <div class="roadmap-point"><span></span></div>
-                    <h5>November 2045</h5>
-                    <span>Diam dolor ipsum sit amet erat ipsum lorem sit</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Roadmap End -->
-
-    <footer th:replace="layout :: footer"></footer>
+<footer th:replace="layout :: footer"></footer>
 </body>
 
 </html>
