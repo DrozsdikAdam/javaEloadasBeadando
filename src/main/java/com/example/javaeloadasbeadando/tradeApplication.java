@@ -18,6 +18,9 @@ import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.pricing.PricingGetRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import com.oanda.v20.trade.*;
+import com.oanda.v20.ExecuteException;
+import com.oanda.v20.RequestException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -112,5 +115,51 @@ public class tradeApplication {
                 .setOrder(marketOrderRequest);
 
         return getContext().order.create(orderCreateRequest);
+    }
+    /**
+     * Lezár egy trade-et a TradeCloseRequest objektum használatával.
+     * @param tradeIdToClose A bezárandó trade azonosítója (String).
+     */
+    public void closeTradeWithRequest(String tradeIdToClose) {
+
+        if (tradeIdToClose == null || tradeIdToClose.trim().isEmpty()) {
+            return;
+        }
+
+        try {
+            // 1. Hozzunk létre egy TradeSpecifier-t a string ID alapján
+            TradeSpecifier tradeSpecifier = new TradeSpecifier(tradeIdToClose);
+
+            // 2. Hozzunk létre egy TradeCloseRequest-et
+            //    (getAccountID() a te meglévő metódusod)
+            TradeCloseRequest request = new TradeCloseRequest(getAccountID(), tradeSpecifier);
+
+            System.out.println("Kísérlet a(z) " + tradeIdToClose + " zárására (TradeCloseRequest metódussal)...");
+
+            // 3. Hívjuk meg a close metódust a request objektummal
+            //    A válasz (response) itt is TradeCloseResponse típusú
+            TradeCloseResponse response = getContext().trade.close(request);
+
+            System.out.println("Trade (ID: " + tradeIdToClose + ") sikeresen lezárva. Tranzakció ID: "
+                    + response.getOrderFillTransaction().getId());
+
+        } catch (RequestException | ExecuteException e) {
+            System.err.println("Hiba történt a(z) " + tradeIdToClose + " trade zárása közben: " + e.getMessage());
+            throw new RuntimeException("API hiba a trade zárása közben: " + e.getMessage(), e);
+        } catch (Exception e) {
+            System.err.println("Általános hiba a(z) " + tradeIdToClose + " trade zárásakor: " + e.getMessage());
+            throw new RuntimeException("Általános hiba a trade zárása közben: " + e.getMessage(), e);
+        }
+    }
+    public List<Trade> getOpenTrades() {
+        try {
+            // Ez a metódus lekéri az összes egyedi nyitott trade-et
+            TradeListOpenResponse response = getContext().trade.listOpen(getAccountID());
+            return response.getTrades();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Hiba esetén üres listát adunk vissza
+            return Collections.emptyList();
+        }
     }
 }

@@ -7,6 +7,8 @@ import com.oanda.v20.instrument.CandlestickGranularity;
 import com.oanda.v20.order.OrderCreateResponse;
 import com.oanda.v20.position.Position;
 import com.oanda.v20.pricing.ClientPrice;
+import com.oanda.v20.trade.Trade;
+import com.oanda.v20.trade.TradeSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import soapclient.MessagePrice;
+import com.example.javaeloadasbeadando.MessageClosePosition;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -145,5 +148,32 @@ public class pageController {
     }
 
     @GetMapping("/forex/zar")
-    public String forexZar() { return "forex-zar"; }
+    public String showForexZarForm(Model model) {
+
+        model.addAttribute("closePositionRequest", new MessageClosePosition());
+
+        List<Trade> openTrades = tradeApplication.getOpenTrades();
+
+        model.addAttribute("openTrades", openTrades);
+        return "forex-zar";
+    }
+
+    @PostMapping("/forex/zar")
+    public String handleForexZarForm(
+            @ModelAttribute MessageClosePosition closePositionRequest,
+            RedirectAttributes redirectAttributes) {
+        String tradeId = closePositionRequest.getTradeId();
+
+        try {
+            tradeApplication.closeTradeWithRequest(tradeId);
+            redirectAttributes.addFlashAttribute("successMessage",
+                    "Siker! A(z) " + tradeId + " azonosítójú trade lezárva.");
+
+        } catch (Exception e) {
+            System.err.println("Hiba a controller szinten a trade zárásakor: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage",
+                    "Hiba a zárás közben: " + e.getMessage());
+        }
+        return "redirect:/forex/poz";
+    }
 }
