@@ -1,5 +1,9 @@
-package com.example.javaeloadasbeadando;
+package com.example.javaeloadasbeadando.controllers;
 
+import com.example.javaeloadasbeadando.dto.ExchangeRateData;
+import com.example.javaeloadasbeadando.dto.MessageClosePosition;
+import com.example.javaeloadasbeadando.service.BankFunctions;
+import com.example.javaeloadasbeadando.service.tradeApplication;
 import com.oanda.v20.RequestException;
 import com.oanda.v20.account.AccountSummary;
 import com.oanda.v20.instrument.Candlestick;
@@ -8,7 +12,6 @@ import com.oanda.v20.order.OrderCreateResponse;
 import com.oanda.v20.position.Position;
 import com.oanda.v20.pricing.ClientPrice;
 import com.oanda.v20.trade.Trade;
-import com.oanda.v20.trade.TradeSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import soapclient.MessagePrice;
-import com.example.javaeloadasbeadando.MessageClosePosition;
 
 import java.util.List;
 import java.util.stream.Collectors;

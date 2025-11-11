@@ -1,5 +1,6 @@
-package com.example.javaeloadasbeadando;
+package com.example.javaeloadasbeadando.service;
 
+import com.example.javaeloadasbeadando.dto.ExchangeRateData;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

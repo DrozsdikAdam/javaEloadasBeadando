@@ -1,4 +1,4 @@
-package com.example.javaeloadasbeadando;
+package com.example.javaeloadasbeadando.config;
 
 import com.oanda.v20.account.AccountID;
 import org.springframework.boot.context.properties.ConfigurationProperties;

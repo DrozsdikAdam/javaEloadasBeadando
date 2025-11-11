@@ -1,4 +1,4 @@
-package com.example.javaeloadasbeadando;
+package com.example.javaeloadasbeadando.dto;
 
 public class MessageClosePosition {
 

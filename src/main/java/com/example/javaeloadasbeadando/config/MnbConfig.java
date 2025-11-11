@@ -1,4 +1,4 @@
-package com.example.javaeloadasbeadando;
+package com.example.javaeloadasbeadando.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
